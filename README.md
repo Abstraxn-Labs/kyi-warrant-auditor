@@ -1,5 +1,7 @@
 # Warrant Auditor
 
+[![CI](https://github.com/Abstraxn-Labs/kyi-warrant-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/Abstraxn-Labs/kyi-warrant-auditor/actions/workflows/ci.yml)
+
 Open-source **KYI Warrant receipt auditor**. Anyone can run it on their machine, paste or upload a signed receipt, and verify that it is authentic — without trusting Abstraxn’s servers alone.
 
 ```
