@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  verify:
+    name: Install + verify sample receipt
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Fetch Warrant public key
+        id: key
+        run: |
+          set -euo pipefail
+          RESP=$(curl -sS --fail https://api-warrant.abstraxn.com/v1/warrant/keys/receipt)
+          HEX=$(node -e 'const j=JSON.parse(process.argv[1]); const h=j.result?.public_key_hex||j.public_key_hex; if(!h) process.exit(1); process.stdout.write(h)' "$RESP")
+          echo "::add-mask::$HEX"
+          echo "PUBLIC_KEY_HEX=$HEX" >> "$GITHUB_ENV"
+
+      - name: Verify sample receipt (offline signature + merkle; no RPC required for exit)
+        env:
+          ONCHAIN: '0'
+        run: npm run verify -- ./examples/sample-receipt.json
+
+      - name: Tamper demo must reject forged amount
+        env:
+          ONCHAIN: '0'
+        run: npm run verify -- ./examples/sample-receipt.json --tamper
+
+      - name: Build web
+        run: npm run build:web
+
+      - name: Typecheck
+        run: npm run typecheck

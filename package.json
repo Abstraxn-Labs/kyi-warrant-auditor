@@ -1,0 +1,38 @@
+{
+  "name": "kyi-warrant-auditor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Open-source auditor for KYI Warrant receipts — verify Ed25519 signatures, Merkle inclusion, and optional on-chain anchors locally",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abstraxn-Labs/kyi-warrant-auditor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Abstraxn-Labs/kyi-warrant-auditor/issues"
+  },
+  "homepage": "https://github.com/Abstraxn-Labs/kyi-warrant-auditor#readme",
+  "scripts": {
+    "start": "npm run demo",
+    "demo:api": "node --import tsx server.ts",
+    "demo:web": "vite --port 5180",
+    "demo": "concurrently -k -n api,web -c blue,green \"npm run demo:api\" \"npm run demo:web\"",
+    "verify": "node --import tsx cli.ts",
+    "build:web": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@abstraxn/warrant-verifier": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "concurrently": "^9.1.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2"
+  }
+}

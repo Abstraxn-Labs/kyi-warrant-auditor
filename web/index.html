@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Warrant Auditor</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <h1>Warrant Auditor</h1>
+      </header>
+
+      <p class="story-note" id="setupNote" hidden></p>
+
+      <div class="layout">
+        <aside class="col col-input">
+          <section class="panel input-panel">
+            <div class="input-head">
+              <h2>Receipt</h2>
+              <div class="input-actions">
+                <label class="btn secondary file-btn">
+                  Upload JSON
+                  <input
+                    id="receiptFile"
+                    type="file"
+                    accept="application/json,.json"
+                    hidden
+                  />
+                </label>
+              </div>
+            </div>
+            <textarea
+              id="receiptJsonIn"
+              rows="14"
+              placeholder="Paste receipt JSON…"
+              spellcheck="false"
+              aria-describedby="parseErr"
+            ></textarea>
+            <details class="shape">
+              <summary>Expected shape</summary>
+              <pre class="shape-pre">{
+  "receipt_id": "rcpt_…",
+  "verdict": "ALLOW | DENY",
+  "reasons": [{ "code": "…" }],
+  "action": {
+    "action_type": "checkout",
+    "value": { "amount": 0, "currency": "USD" }
+  },
+  "signature": {
+    "alg": "Ed25519",
+    "sig": "…",
+    "key_id": "…"
+  },
+  "onchain": { "root": "0x…", "proof": [], "txHash": "0x…" }
+}</pre>
+            </details>
+            <p class="err" id="parseErr" role="alert"></p>
+          </section>
+
+          <section class="story" id="storyCard" hidden>
+            <p class="story-label" id="storyLabel">Receipt</p>
+            <div class="story-grid">
+              <div>
+                <span class="k">Verdict</span>
+                <strong id="storyVerdict">—</strong>
+              </div>
+              <div>
+                <span class="k">Why</span>
+                <strong id="storyReason">—</strong>
+              </div>
+              <div>
+                <span class="k">Action</span>
+                <strong id="storyAction">—</strong>
+              </div>
+              <div>
+                <span class="k">Receipt</span>
+                <strong id="storyId" class="mono">—</strong>
+              </div>
+            </div>
+          </section>
+
+          <div class="demo-actions" id="actionRow" hidden>
+            <div class="btn-row">
+              <button type="button" id="verifyBtn" class="btn primary big">
+                Verify
+              </button>
+              <button type="button" id="tamperBtn" class="btn secondary big">
+                Tamper
+              </button>
+            </div>
+            <label class="checkbox">
+              <input type="checkbox" id="onchain" checked />
+              On-chain
+            </label>
+          </div>
+
+          <details class="advanced">
+            <summary>Public key</summary>
+            <textarea
+              id="publicKeyHex"
+              rows="2"
+              placeholder="PUBLIC_KEY_HEX (optional — uses .env if empty)"
+              spellcheck="false"
+              aria-describedby="pubkeyErr"
+            ></textarea>
+            <p class="err" id="pubkeyErr" role="alert"></p>
+          </details>
+        </aside>
+
+        <section class="col col-results">
+          <section class="flow" id="flowRow" aria-label="Verification steps" hidden>
+            <div class="flow-node" data-step="fetch">
+              <span class="flow-num">1</span>
+              <span>Load</span>
+            </div>
+            <div class="flow-line"></div>
+            <div class="flow-node" data-step="ed25519">
+              <span class="flow-num">2</span>
+              <span>Signature</span>
+            </div>
+            <div class="flow-line"></div>
+            <div class="flow-node" data-step="merkle">
+              <span class="flow-num">3</span>
+              <span>Merkle</span>
+            </div>
+            <div class="flow-line"></div>
+            <div class="flow-node" data-step="receipt_log">
+              <span class="flow-num">4</span>
+              <span>On-chain</span>
+            </div>
+          </section>
+
+          <p class="err" id="err"></p>
+
+          <main class="panel panel-results" id="resultsPanel" hidden>
+            <div class="verdict-banner" id="verdictBanner" hidden>
+              <span class="verdict-label" id="verdictLabel">—</span>
+              <span class="verdict-reason" id="verdictReason"></span>
+            </div>
+            <ul class="steps" id="steps"></ul>
+            <details class="meta" id="metaBlock" hidden>
+              <summary>Technical details</summary>
+              <dl id="metaList"></dl>
+              <pre id="receiptJson"></pre>
+            </details>
+          </main>
+
+          <div class="empty-results" id="emptyResults">
+            <p>Paste a receipt and click Verify</p>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

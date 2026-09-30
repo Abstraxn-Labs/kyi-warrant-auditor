@@ -1,0 +1,58 @@
+{
+  "action": {
+    "items": [
+      {
+        "name": "Cheese Volcano Farmhouse"
+      }
+    ],
+    "value": {
+      "amount": 595.35,
+      "currency": "INR"
+    },
+    "domain": "food",
+    "agent_id": "sorted_ec8c095749e84d608f9ac3f6",
+    "timestamp": "2026-09-08T10:07:15.965Z",
+    "action_type": "checkout",
+    "counterparty": {
+      "id": "domino's",
+      "type": "vendor"
+    }
+  },
+  "domain": "food",
+  "reasons": [
+    {
+      "code": "CATEGORY_UNRESOLVED",
+      "layer": "L2",
+      "detail": {
+        "item": "Cheese Volcano Farmhouse"
+      }
+    }
+  ],
+  "verdict": "DENY",
+  "agent_id": "sorted_ec8c095749e84d608f9ac3f6",
+  "signature": {
+    "alg": "Ed25519",
+    "sig": "3256c6672328ec8b21b7a9222feef33353be4bc38778d4d3c0757f8facc7881e4d3270107f58009dbbaff648f9328fecac5de187e2268ee187a1d134ccb65209",
+    "key_id": "kyi-prod-001"
+  },
+  "receipt_id": "rcpt_dec_6e10c794-4c40-4946-ada6-2e1c6c4531c7",
+  "decision_id": "dec_6e10c794-4c40-4946-ada6-2e1c6c4531c7",
+  "evaluated_at": "2026-09-08T10:07:15.965Z",
+  "inputs_digest": "dbfa3993ecbba6edfdf27df1d553841fc2230689b85282705d30df1e4fdaa5fc",
+  "matched_mandate_ids": [
+    "mnd_sha256:a298b87a734b4d940e9b252269ad6b3a"
+  ],
+  "onchain": {
+    "status": "confirmed",
+    "leafHash": "0xf04bb174652e92b03b1e28d3f457de7252a25f08c69dfce492062da8035d2cf5",
+    "batchId": "30",
+    "leafIndex": 0,
+    "proof": [],
+    "root": "0xf04bb174652e92b03b1e28d3f457de7252a25f08c69dfce492062da8035d2cf5",
+    "txHash": "0x51f0c3275446a877a053d527a68c22508816966f2cf4d750a7c6367f36a08da9",
+    "manifestHash": "0x6ff5087965cd6fa5c0f31ea0c95541bafb6c5457b22ac280819fb821c7d8d871",
+    "periodStart": 1788862035,
+    "periodEnd": 1788862035,
+    "lastError": null
+  }
+}
