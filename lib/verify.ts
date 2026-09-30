@@ -447,6 +447,43 @@ export async function runVerification(
       root: onchain.root,
       chainId: verifyChainId,
     });
+
+    let detail =
+      rpc.error ?? onchain.txHash ?? undefined;
+    if (!rpc.included && !rpc.error) {
+      // Help diagnose wrong-chain / wrong-batch vs proof issues
+      try {
+        const { Contract, JsonRpcProvider } = await import('ethers');
+        const provider = new JsonRpcProvider(verifyRpc, verifyChainId);
+        const log = new Contract(
+          config.receiptLog,
+          ['function rootOf(uint256 batchId) view returns (bytes32)'],
+          provider,
+        );
+        if (onchain.batchId != null && onchain.batchId !== '') {
+          const onchainRoot = String(await log.rootOf(onchain.batchId));
+          const want = String(onchain.root ?? '').toLowerCase();
+          const got = onchainRoot.toLowerCase();
+          if (want && got && want !== got) {
+            detail =
+              `batch ${onchain.batchId} on ${chainLabel(verifyChainId)} has different root ` +
+              `(chain=${onchainRoot.slice(0, 18)}… receipt=${String(onchain.root).slice(0, 18)}…). ` +
+              `Wrong batch or this receipt was anchored on another chain. ` +
+              (onchain.txHash ? `tx=${onchain.txHash}` : '');
+          } else {
+            detail =
+              `Leaf not in batch ${onchain.batchId} on ${chainLabel(verifyChainId)} ` +
+              `(contract ${config.receiptLog}). ` +
+              (onchain.txHash ? `tx=${onchain.txHash}` : '');
+          }
+        }
+      } catch (err) {
+        detail =
+          (err instanceof Error ? err.message : String(err)) +
+          (onchain.txHash ? ` · tx=${onchain.txHash}` : '');
+      }
+    }
+
     steps.push(
       step(
         'receipt_log',
@@ -455,7 +492,7 @@ export async function runVerification(
         rpc.included
           ? `Anchored on ${chainLabel(verifyChainId)} — batch ${rpc.batchId ?? onchain.batchId ?? '?'}`
           : `Not found on ReceiptLog (${chainLabel(verifyChainId)})`,
-        rpc.error ?? onchain.txHash ?? undefined,
+        detail,
       ),
     );
   } else if (config.onchain) {
