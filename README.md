@@ -38,36 +38,17 @@ No Abstraxn API key is required for the crypto check.
 ```bash
 git clone https://github.com/Abstraxn-Labs/kyi-warrant-auditor.git
 cd kyi-warrant-auditor
-cp .env.example .env   # optional but recommended
-```
-
-Set the public key (recommended for offline audits):
-
-```bash
-# Option A — use the bundled public key
-# already at examples/warrant-public-key.hex
-
-# Option B — fetch from Warrant (may require an app API key)
-curl -sS https://api-warrant.abstraxn.com/v1/warrant/keys/receipt
-# copy result.public_key_hex → PUBLIC_KEY_HEX in .env
-```
-
-In `.env`:
-
-```env
-PUBLIC_KEY_FILE=./examples/warrant-public-key.hex
-# or: PUBLIC_KEY_HEX=<hex>
-```
-
-```bash
+cp .env.example .env
 npm install
 npm run demo
 ```
 
 Open **http://localhost:5180**
 
-Scripts load `.env` when present and **do not crash** if it is missing (you can still paste a public key in the UI).
+`.env.example` already includes Warrant’s **public** `PUBLIC_KEY_HEX` (safe to share — not a secret).  
+Copying it to `.env` is enough for signature checks. The same key is also in `examples/warrant-public-key.hex`.
 
+Scripts still work if `.env` is missing (you can paste a key in the UI), but `.env` is recommended.
 ### UI flow
 
 1. **Paste** receipt JSON or **Upload** a `.json` file
@@ -91,7 +72,8 @@ See [`.env.example`](./.env.example). Important vars:
 
 | Variable | Purpose |
 |----------|---------|
-| `PUBLIC_KEY_HEX` | Warrant Ed25519 public key (best for offline audits) |
+| `PUBLIC_KEY_HEX` | Warrant Ed25519 public key (**included** in `.env.example`; public by design) |
+| `PUBLIC_KEY_FILE` | Optional path to hex/JSON key file (e.g. `examples/warrant-public-key.hex`) |
 | `WARRANT_URL` | Used only if the key must be fetched |
 | `ONCHAIN` | `1` = also check ReceiptLog via RPC; `0` = signature/Merkle only |
 | `WARRANT_CHAIN_ID` | Default chain if receipt has no `onchain.chainId` (`80002` Amoy, `84532` Base Sepolia) |
@@ -136,7 +118,7 @@ warrant-auditor/
 └── README.md
 ```
 
-Bundled public key: `examples/warrant-public-key.hex` (public by design; used by CI).
+Bundled public key: filled in `.env.example` as `PUBLIC_KEY_HEX`, and also at `examples/warrant-public-key.hex` (public by design; used by CI).
 
 Core crypto lives in [`@abstraxn/warrant-verifier`](https://www.npmjs.com/package/@abstraxn/warrant-verifier).
 
