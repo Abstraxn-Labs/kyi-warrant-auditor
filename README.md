@@ -44,8 +44,19 @@ cp .env.example .env   # optional but recommended
 Set the public key (recommended for offline audits):
 
 ```bash
+# Option A — use the bundled public key
+# already at examples/warrant-public-key.hex
+
+# Option B — fetch from Warrant (may require an app API key)
 curl -sS https://api-warrant.abstraxn.com/v1/warrant/keys/receipt
 # copy result.public_key_hex → PUBLIC_KEY_HEX in .env
+```
+
+In `.env`:
+
+```env
+PUBLIC_KEY_FILE=./examples/warrant-public-key.hex
+# or: PUBLIC_KEY_HEX=<hex>
 ```
 
 ```bash
@@ -120,12 +131,12 @@ warrant-auditor/
 ├── lib/verify.ts        # Verification pipeline
 ├── server.ts            # Local API (/api/verify, /api/status)
 ├── cli.ts               # Headless verify
-├── examples/            # Example receipt for CLI tests
+├── examples/            # Sample receipt + Warrant public key
 ├── .env.example
 └── README.md
 ```
 
-UI also shows a collapsed **Expected shape** for the receipt JSON fields.
+Bundled public key: `examples/warrant-public-key.hex` (public by design; used by CI).
 
 Core crypto lives in [`@abstraxn/warrant-verifier`](https://www.npmjs.com/package/@abstraxn/warrant-verifier).
 

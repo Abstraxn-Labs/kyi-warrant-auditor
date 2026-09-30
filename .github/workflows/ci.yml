@@ -22,23 +22,16 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Fetch Warrant public key
-        id: key
-        run: |
-          set -euo pipefail
-          RESP=$(curl -sS --fail https://api-warrant.abstraxn.com/v1/warrant/keys/receipt)
-          HEX=$(node -e 'const j=JSON.parse(process.argv[1]); const h=j.result?.public_key_hex||j.public_key_hex; if(!h) process.exit(1); process.stdout.write(h)' "$RESP")
-          echo "::add-mask::$HEX"
-          echo "PUBLIC_KEY_HEX=$HEX" >> "$GITHUB_ENV"
-
-      - name: Verify sample receipt (offline signature + merkle; no RPC required for exit)
+      - name: Verify sample receipt
         env:
           ONCHAIN: '0'
+          PUBLIC_KEY_FILE: ./examples/warrant-public-key.hex
         run: npm run verify -- ./examples/sample-receipt.json
 
       - name: Tamper demo must reject forged amount
         env:
           ONCHAIN: '0'
+          PUBLIC_KEY_FILE: ./examples/warrant-public-key.hex
         run: npm run verify -- ./examples/sample-receipt.json --tamper
 
       - name: Build web
